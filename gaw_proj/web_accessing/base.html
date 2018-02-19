@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <script src='//code.jquery.com/jquery-3.2.1.min.js' ></script>
+    <script>
+    (function(){
+
+
+    $(document).ready(function(){
+
+    $( "#search_bar" )
+
+    }); // ---- end document ready
+
+
+    window.onload = function(){
+    }; // ---- end window.onload
+    })(); // ---- end function
+    </script>
+    <style>
+        #search_bar {
+        z-index : 9999;
+        position : fixed;
+        width : 100%;
+        display : inline-flex;
+        }
+    </style>
+</head>
+<body>
+    <div id="search_bar">
+    <form action="./search" method="GET">
+        $:form.render()
+    </form>
+    </div>
+    {{ content }}
+</body>
+</html>
