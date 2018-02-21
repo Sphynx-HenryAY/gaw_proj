@@ -6,7 +6,7 @@ from ..searching.google import perform as search_func
 from ..visualization.pretty_rank_data import prettify as show_func
 from ..visualization.cal_ranking import render_ranking_content as rank_func
 
-from ..tmpl import ranking_content
+from ..tmpl import ranking_content, index_content
 
 
 urls = [
@@ -19,7 +19,10 @@ template = web.template.render( "gaw_proj/web_accessing" )
 
 class index:
     def GET( self ):
-        return base.base( { "search_bar_form" : search_bar_form } )
+        return template.base( { 
+            "search_bar_form" : search_bar_form 
+            , "content" : index_content
+        } )
 
 class search:
     def GET( self, name ):
