@@ -10,6 +10,7 @@ def get_arg( args, index, default = None ):
 def todigit( arg, default = None ):
     return int( arg ) if arg and arg.isdigit() else default
 
+
 def pre_search( args ):
     kw = get_arg( args, 2, "" )
 
@@ -33,4 +34,5 @@ if __name__ == "__main__":
     args = sys.argv
     if len( args ) > 2:
         map_func.get( get_arg( args, 1 ), "search" )( args )
+
     print( "finished" )

@@ -1,6 +1,8 @@
 from urllib.request import urlopen, Request
 from urllib.parse import urlencode
 
+from collections import Counter
+
 from bs4 import BeautifulSoup
 
 from ..ctt_cls_name import google_cls
@@ -10,6 +12,7 @@ from ..settings import headers, bs_parser_lib, Rank_Data
 def google_get_rank( 
         page_ctt : "<str> : decoded 'page content' return from website"
         , rank_data : Rank_Data = []
+        , is_indexing : bool = False
     ) -> "<str> DUPL : existing record signal" or "<int> 0 : normal exit" :
 
     start_index = len( rank_data )
@@ -20,6 +23,9 @@ def google_get_rank(
 
         abstract = b.find_all( "span", class_ = google_cls.get( "ctt_abst", "st" ) )
         abstract = abstract[ 0 ].text if abstract else "__NO_ABSTRACT__"
+
+        if is_indexing:
+            abstract = Counter( abstract.lower().replace( "\"", "" ).replace( ".", "" ).replace( ",", "" ).split( " " ) )
 
         data = {
             "rank" : len( rank_data )
@@ -42,12 +48,14 @@ def google_get_rank(
 def perform( 
         kw : "<str> : keyword"
         , num_get : "<int> : target number of result in list" = 20
+        , is_indexing : bool = False
     ) -> Rank_Data :
 
     gs_url = "https://www.google.com.hk/search?"
     gs_kwa = { 
         "ie" : "UTF-8" 
         , "q" : kw
+        , "hl" : "en"
     }
     rank_data = []
 
@@ -55,7 +63,7 @@ def perform(
     req = Request( gs_url + urlencode( gs_kwa ), headers = headers )
     page_ctt = urlopen( req ).read().decode( "utf8" )
 
-    google_get_rank( page_ctt, rank_data )
+    google_get_rank( page_ctt, rank_data, is_indexing )
 
 
     while len( rank_data ) < num_get:
@@ -64,7 +72,7 @@ def perform(
         req = Request( gs_url + urlencode( gs_kwa ), headers = headers )
         page_ctt = urlopen( req ).read().decode( "utf8" )
 
-        exit_code = google_get_rank( page_ctt, rank_data )
+        exit_code = google_get_rank( page_ctt, rank_data, is_indexing )
 
         if exit_code and exit_code in [ "END", "DUPL" ]:
             break

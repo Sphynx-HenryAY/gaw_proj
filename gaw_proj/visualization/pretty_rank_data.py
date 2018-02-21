@@ -1,10 +1,11 @@
+from typing import List
 from ..settings import Rank_Data
 
-type_print = "print"
-type_join = "join"
-type_json = "json"
-type_web = "web"
 
+type_print  = "print"
+type_join   = "join"
+type_json   = "json"
+type_web    = "goog"
 
 def prettify(
         rank_data : Rank_Data
@@ -12,10 +13,10 @@ def prettify(
     ) -> "<str> in json format or joined by new line" :
 
     return {
-        type_print : print_rank_data
+        type_print  : print_rank_data
         , type_join : join_rank_data
         , type_json : json_rank_data
-        , type_web : return_binary
+        , type_web  : return_search_content
     }.get( return_type, print_rank_data )( rank_data )
 
 
@@ -30,11 +31,11 @@ def join_rank_data( rank_data : Rank_Data ) -> "<str> join rank_data" :
     return "\n".join( data_list )
 
 
-def connect_rank_data(rank_data : Rank_Data, pretty_func ):
+def connect_rank_data( rank_data : Rank_Data, pretty_func ):
 
     for data_dict in rank_data:
 
-        pretty_func( data_dict.get( "title", "TITLE_LOST" ) )
+        pretty_func( data_dict.pop( "title", "TITLE_LOST" ) )
 
         for k in sorted( data_dict ):
             pretty_func( "%s : %s"%( k, str( data_dict[ k ] ) ) )
@@ -48,7 +49,11 @@ def json_rank_data( rank_data : Rank_Data ) -> "<str> joined by new line" :
     return dumps( rank_data )
 
 
-def return_binary( rank_data : Rank_Data ) -> "<str> encoded with utf8 " :
-    return join_rank_data( rank_data ).replace( "\n", "<br/>" )
+def return_search_content( rank_data : Rank_Data ) -> "<str> modified by html tags" :
+    for each in rank_data:
+        each.pop( "rank" )
+        each[ "link" ] = "<a href='%s'>Click</a>"%each[ "link" ]
+        each[ "abstract" ] = each[ "abstract" ][ : 140 ]
 
+    return join_rank_data( rank_data ).replace( "\n", "<br/>" )
 

@@ -1,38 +1,79 @@
+$def with ( ctx )
 <!DOCTYPE html>
 <html>
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <script src='//code.jquery.com/jquery-3.2.1.min.js' ></script>
-    <script>
-    (function(){
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<script type="text/javascript" src="//canvasjs.com/assets/script/jquery-1.11.1.min.js"></script>  
+	<script type="text/javascript" src="//canvasjs.com/assets/script/jquery.canvasjs.min.js"></script> 
+	<script>
+(function(){
+var jq = jQuery.noConflict();
+jq( document ).ready( function(){
 
+	jq( "#get_type" ).click( function(){
+		jq( "#search_bar form" ).attr( "action", "/" + jq( "#selection" ).val() ).submit();
+	} );
 
-    $(document).ready(function(){
+} ); // ---- end document ready
+window.onload = function(){
+}; // ---- end window.onload
+})(); // ---- end function
+	</script>
 
-    $( "#search_bar" )
-
-    }); // ---- end document ready
-
-
-    window.onload = function(){
-    }; // ---- end window.onload
-    })(); // ---- end function
-    </script>
-    <style>
-        #search_bar {
-        z-index : 9999;
-        position : fixed;
-        width : 100%;
-        display : inline-flex;
-        }
-    </style>
+	$if "rank_data_list" in ctx:
+		<script>
+		var jq = jQuery.noConflict();
+		window.onload = function() {
+			jq("#canvas_div").CanvasJSChart({
+				title: {
+					text: "Occurences of Top words in Website Abstract"
+				},
+				theme: "theme2",
+				axisY: {
+					title: "Occurence Percent",
+					suffix: "%"
+				},
+				toolTip: {
+					  content: "{label} <br/> {name}: jq{y} (#percent%)"
+				},
+				data: [
+					$:ctx.get( "rank_data_list" )
+				]
+			});
+		}
+		</script>
+	<style>
+	#search_bar {
+		z-index : 9999;
+		position : fixed;
+		width : 100vw;
+		height : 30px;
+		background-color : white;
+	}
+	#search_bar * {
+		display : inline-flex;
+	}
+	#content_div {
+		padding : 30px 15px 15px 15px;
+	}
+	</style>
 </head>
 <body>
-    <div id="search_bar">
-    <form action="./search" method="GET">
-        $:form.render()
-    </form>
-    </div>
-    {{ content }}
+	<div id="search_bar">
+	<form action="/" method="GET">
+		$:ctx.get( "search_bar_form" ).render()
+	</form>
+	</div>
+	<div id="content_div">
+		$if ctx.get( "proc_time" ):
+			Time spent: $ctx.get( "proc_time" ) s
+			<br/>
+			<br/>
+			
+		$if ctx.get( "content" ):
+			$:ctx.get( "content" )	
+	</div>
+	<div id="canvas_div" style="width: 100%; height: 600px;">
+	</div>
 </body>
 </html>
