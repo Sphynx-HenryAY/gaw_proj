@@ -18,6 +18,8 @@ headers = {
 }
 
 base_rvs_kws = [ "to","and","a","is","for","in","of","the","your"
-        ,"that", "on", "by", "on", "an", "from", "", "you", "use"
-        , "more", "-", "than", "·", "are", "or" ]
+    ,"that", "on", "by", "on", "an", "from", "", "you", "use"
+    , "more", "-", "than", "·", "are", "or", "can", "with"
+    , "using", "&", "this", "it"
+]
 

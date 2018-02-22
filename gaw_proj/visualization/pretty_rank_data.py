@@ -51,9 +51,8 @@ def json_rank_data( rank_data : Rank_Data ) -> "<str> joined by new line" :
 
 def return_search_content( rank_data : Rank_Data ) -> "<str> modified by html tags" :
     for each in rank_data:
-        each.pop( "rank" )
         each[ "link" ] = "<a href='%s'>Click</a>"%each[ "link" ]
-        each[ "abstract" ] = each[ "abstract" ][ : 140 ]
+        each[ "abstract" ] = each[ "abstract" ]
 
     return join_rank_data( rank_data ).replace( "\n", "<br/>" )
 

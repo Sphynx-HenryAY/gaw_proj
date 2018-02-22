@@ -11,7 +11,7 @@ var jq = jQuery.noConflict();
 jq( document ).ready( function(){
 
 	jq( "#get_type" ).click( function(){
-		jq( "#search_bar form" ).attr( "action", "/" + jq( "#selection" ).val() ).submit();
+		jq( "#search_bar form" ).attr( "action", "/" + jq( "#search_bar form select" ).val() ).submit();
 	} );
 
 } ); // ---- end document ready
@@ -44,20 +44,42 @@ window.onload = function(){
 		</script>
 	<style>
 	#search_bar {
-		z-index : 9999;
 		position : fixed;
+		top : 0px;
 		width : 100vw;
-		height : 30px;
-		background-color : white;
+		color : #55667788;
 	}
 	#search_bar * {
 		display : inline-flex;
+		margin : auto;
 	}
 	#content_div {
 		padding : 30px 15px 15px 15px;
 	}
 	input {
 		margin : 0px 20px 0px 5px;
+	}
+
+	@media only screen and ( min-width: 1025px ) {
+		#search_bar {
+			font-size : 24px;
+		}
+	}
+	@media only screen and ( min-width: 641px ) {
+		#search_bar {
+			font-size : 3rem;
+		}
+		#search_bar * {
+			display : block;
+		}
+	}
+	@media only screen and ( max-width: 641px ) {
+		#search_bar {
+			font-size : 30px;
+		}
+		#search_bar * {
+			display : block;
+		}
 	}
 	</style>
 </head>
@@ -76,6 +98,7 @@ window.onload = function(){
 		$if ctx.get( "content" ):
 			$:ctx.get( "content" )	
 	</div>
+$if "rank_data_list" in ctx:
 	<div id="canvas_div" style="width: 100%; height: 600px;">
 	</div>
 </body>

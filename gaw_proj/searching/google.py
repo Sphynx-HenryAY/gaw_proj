@@ -6,12 +6,18 @@ from collections import Counter
 from bs4 import BeautifulSoup
 
 from ..ctt_cls_name import google_cls
-from ..settings import headers, bs_parser_lib, Rank_Data
+from ..settings import headers, bs_parser_lib, Rank_Data, base_rvs_kws
 
+from typing import List
+
+def rm_sub( content : str, rm_strs : List[ str ] ):
+    for e in rm_strs:
+        content = content.replace( e, "" )
+    return content
 
 def google_get_rank( 
         page_ctt : "<str> : decoded 'page content' return from website"
-        , rank_data : Rank_Data = []
+        , rank_data : Rank_Data
         , is_indexing : bool = False
     ) -> "<str> DUPL : existing record signal" or "<int> 0 : normal exit" :
 
@@ -25,7 +31,9 @@ def google_get_rank(
         abstract = abstract[ 0 ].text if abstract else "__NO_ABSTRACT__"
 
         if is_indexing:
-            abstract = Counter( abstract.lower().replace( "\"", "" ).replace( ".", "" ).replace( ",", "" ).split( " " ) )
+            abstract = Counter( rm_sub( abstract.lower(), [ "\"", ".", "," ] ).split( " " ) )
+            for e in base_rvs_kws:
+                abstract.pop( e, 0 )
 
         data = {
             "rank" : len( rank_data )
@@ -58,7 +66,6 @@ def perform(
         , "hl" : "en"
     }
     rank_data = []
-
 
     req = Request( gs_url + urlencode( gs_kwa ), headers = headers )
     page_ctt = urlopen( req ).read().decode( "utf8" )
