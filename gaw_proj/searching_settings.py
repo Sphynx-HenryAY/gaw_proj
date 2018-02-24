@@ -21,7 +21,7 @@ cls = {
     }
     , "baidu" : {
         "ctt_block" : ( "div", "c-result" )
-        , "ctt_abstract" : ( "div", "c-abstract" )
+        , "ctt_abstract" : ( "", "c-abstract" )
         , "ctt_title" : ( "h3", "c-title" )
         , "ctt_link" : ( "span", "c-showurl" )
     }

@@ -29,25 +29,27 @@ def get_rank(
     for ctt_block in s.find_all( blk_tag, class_ = blk_cls ):
         b = ctt_block
 
-        abstract = b.find_all( abst_tag, class_ = abst_cls )
-        abstract = abstract[ 0 ].text if abstract else "__NO_ABSTRACT__"
+        abstract = b.find( abst_tag, class_ = abst_cls )
+        abstract = abstract.text if abstract else "__NO_ABSTRACT__"
 
         if is_indexing:
-
-            if abstract == "__NO_ABSTRACT__":
-                continue
 
             abstract = Counter( abstract.lower().split( " " ) )
             for e in base_rvs_kws:
                 abstract.pop( e, 0 )
 
-        title = b.find_all( ttl_tag, class_ = ttl_cls )
+        title = b.find( ttl_tag, class_ = ttl_cls )
+        title = title.text if title else "__NO_TITLE__"
+
+        if abstract == "__NO_ABSTRACT__" and ( title == "__NO_TITLE__" or is_indexing ):
+            continue
+
         link = b.attrs.get( "data-log" )
         link = json.loads( link.replace( "'", '"' ) ).get( "mu", "" ) if link else b.a.attrs.get( "href")
 
         data = {
             "rank" : len( rank_data )
-            , "title" : title[ 0 ].text if title else "__NO_TITLE__"
+            , "title" : 
             , "link" : link
             , "abstract" : abstract
         }

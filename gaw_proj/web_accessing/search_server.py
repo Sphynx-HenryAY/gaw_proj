@@ -14,7 +14,7 @@ search_bar_form = form.Form(
     form.Textbox( "kw", description = "Keyword:" )
     , form.Textbox( "num_get", description = "Result Number:" )
     , form.Dropdown( "functions", [ ( "search", "Search" ), ( "ranking", "Get Rank" ) ] )
-    , form.Dropdown( "engine", [ ( "google", "Google" ), ( "baidu", "Baidu" ), ( "hybrid", "Hybrid" ) ] )
+    , form.Dropdown( "engine", [ ( "google", "Google" ), ( "baidu", "Baidu" ) ] )#, ( "hybrid", "Hybrid" )
 )
 
 
@@ -22,7 +22,7 @@ def get_query():
     kwargs = web.input()
 
     if not kwargs or not kwargs.kw:
-        return empty().GET( msg = "you need to input at least a key word" )
+        raise web.seeother( "/Request_Received_BUT/You need to input at least a key word" )
         
     """
         when Searching  : only the first one would be searched
@@ -33,6 +33,10 @@ def get_query():
     
     num_get = kwargs.get( "num_get", "10" )
     num_get = int( num_get ) if num_get and num_get.isdigit() else 10
+
+    print( num_get )
+    if num_get > 50 :
+        raise web.seeother( "/Request_Received_BUT/DANGEROUS & FORBIDDEN!" )
 
     engine = kwargs.get( "engine", default_search_engine )
 
@@ -83,7 +87,7 @@ class ranking:
         return template.base( ctx )
 
 class empty:
-    def GET( self, name = None, msg = None ):
+    def GET( self, name = "This", msg = "" ):
         return """
 <html>
 <head>
@@ -102,7 +106,7 @@ class empty:
     <hr/>
 </body>
 </html>
-"""% "<i>%s</i>"%msg or "<i>%s</i> page is not acceeeeeeeeessible"%name
+"""% ( "<i>%s</i>"%msg if msg else "<i>%s</i> page is not acceeeeeeeeessible"%name )
 
 class WebPortApp( web.application ):
     def run( self, port = 9999, *middleware ):
@@ -113,6 +117,7 @@ urls = [
     "/", "index"
     , "/(search|google)", "search"
     , "/ranking", "ranking"
+    , "/(.*)/(.*)", "empty"
 ]
 
 def start_server( port = 9999 ):
