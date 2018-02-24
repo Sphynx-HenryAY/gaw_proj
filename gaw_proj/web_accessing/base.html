@@ -11,7 +11,7 @@ var jq = jQuery.noConflict();
 jq( document ).ready( function(){
 
 	jq( "#get_type" ).click( function(){
-		jq( "#search_bar form" ).attr( "action", "/" + jq( "#search_bar form select" ).val() ).submit();
+		jq( "#search_bar form" ).attr( "action", "/" + jq( "#functions" ).val() ).submit();
 	} );
 
 } ); // ---- end document ready
@@ -46,11 +46,11 @@ window.onload = function(){
 	#search_bar {
 		position : fixed;
 		top : 0px;
-		width : 100vw;
-		color : #55667788;
+		right : 0px;
+		color : rgba(85, 102, 119, 0.5);
+		z-index : 99;
 	}
 	#search_bar * {
-		display : inline-flex;
 		margin : auto;
 	}
 	#content_div {
@@ -88,6 +88,7 @@ window.onload = function(){
 	<form action="/" method="GET">
 		$:ctx.get( "search_bar_form" ).render()
 	</form>
+	<button id="get_type" name="get_type" type="submit">Submit</button>
 	</div>
 	<div id="content_div">
 		$if ctx.get( "proc_time" ):
