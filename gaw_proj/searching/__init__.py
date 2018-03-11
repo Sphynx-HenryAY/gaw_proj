@@ -1,4 +1,4 @@
-from ..searching_settings import *
+from ..settings.searching import shortcuts as sc
 
 from ..settings import Rank_Data
 from typing import List
@@ -12,12 +12,19 @@ def search(
         , engine : str = "google"
     ) -> List[ Rank_Data ] :
 
-    if engine == "baidu":
-        setting = query_settings.get( "baidu" )
-        setting[ "kwa" ][ "wd" ] = kw
-    else:
-        setting = query_settings.get( "google" )
-        setting[ "kwa" ][ "q" ] = setting[ "kwa" ][ "oq" ] = kw
+    query = sc[ engine ].settings[ "query" ]
 
-    return perform( kw, num_get, is_indexing, setting, cls.get( engine ) )
+    if engine == "baidu":
+        query[ "kwa" ][ "wd" ] = kw
+    else:
+        query[ "kwa" ][ "q" ] = query[ "kwa" ][ "oq" ] = kw
+
+    return perform(
+        kw
+        , num_get
+        , is_indexing
+        , query
+        , sc[ engine ].settings[ "query" ]
+        , sc[ engine ].settings.get( "special", {} )
+    )
 

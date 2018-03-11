@@ -7,15 +7,15 @@ import json
 from bs4 import BeautifulSoup
 
 from typing import List
+
 from ..settings import Rank_Data
 
-from ..searching_settings import *
-
 def get_rank( 
-        page_ctt : "<str> : decoded 'page content' return from website"
-        , rank_data : Rank_Data
+        rank_data : Rank_Data
+        , page_ctt : "<str> : decoded 'page content' return from website"
         , is_indexing : bool = False
         , ctt_cls = None
+        , special_func = {}
     ) -> "<str> DUPL : existing record signal" or "<int> 0 : normal exit" :
 
     start_index = len( rank_data )
@@ -33,6 +33,8 @@ def get_rank(
         abstract = abstract.text if abstract else "__NO_ABSTRACT__"
 
         if is_indexing:
+            if abstract == "__NO_ABSTRACT__":
+                continue
 
             abstract = Counter( abstract.lower().split( " " ) )
             for e in base_rvs_kws:
@@ -41,18 +43,17 @@ def get_rank(
         title = b.find( ttl_tag, class_ = ttl_cls )
         title = title.text if title else "__NO_TITLE__"
 
-        if abstract == "__NO_ABSTRACT__" and ( title == "__NO_TITLE__" or is_indexing ):
-            continue
-
-        link = b.attrs.get( "data-log" )
-        link = json.loads( link.replace( "'", '"' ) ).get( "mu", "" ) if link else b.a.attrs.get( "href")
-
         data = {
             "rank" : len( rank_data )
-            , "title" : 
-            , "link" : link
+            , "title" : title
+            , "link" : b.a.attrs.get( "href")
             , "abstract" : abstract
         }
+
+        
+        for each in set( special_func ) & set( data ):
+            special_result = special_func[ each ]( ctt_block )
+            data[ each ] = special_result if special_result else data[ each ]
 
         if data not in rank_data:
             rank_data.append( data )
@@ -69,24 +70,24 @@ def perform(
         kw : "<str> : keyword"
         , num_get : "<int> : target number of result in list" = 20
         , is_indexing : bool = False
-        , query_setting = None
+        , query_ele = None
         , cls = None
+        , special_func = {}
     ) -> Rank_Data :
 
-    if not query_setting:
-        raise Exception( "Please assign a query_setting" )
+    if not query_ele:
+        raise Exception( "Please assign a query_ele" )
 
-    query_url = query_setting.get( "url", "" )
-    query_kwa = query_setting.get( "kwa", {} )
+    query_url = query_ele.get( "url", "" )
+    query_kwa = query_ele.get( "kwa", {} )
 
-    begin_wd  = query_setting.get( "begin_wd", "" )
+    begin_wd  = query_ele.get( "begin_wd", "" )
 
     req = Request( query_url + urlencode( query_kwa ), headers = headers )
     page_ctt = urlopen( req ).read().decode( "utf8" )
 
-
     rank_data = []
-    get_rank( page_ctt, rank_data, is_indexing, cls )
+    get_rank( rank_data, page_ctt, is_indexing, cls, special_func )
 
     while len( rank_data ) < num_get:
         query_kwa.update( { begin_wd : len( rank_data ) } )
@@ -94,7 +95,7 @@ def perform(
         req = Request( query_url + urlencode( query_kwa ), headers = headers )
         page_ctt = urlopen( req ).read().decode( "utf8" )
 
-        exit_code = get_rank( page_ctt, rank_data, is_indexing, cls )
+        exit_code = get_rank( rank_data, page_ctt, is_indexing, cls, special_func )
 
         if exit_code and exit_code in [ "END", "DUPL" ]:
             break

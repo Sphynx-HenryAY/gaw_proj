@@ -3,7 +3,7 @@ from web import form
 
 from ..run3 import *
 from ..tmpl import ranking_content, index_content
-from ..searching_settings import default_search_engine
+from ..settings.searching import default_search_engine
 
 from time import time as get_time
 
@@ -34,7 +34,6 @@ def get_query():
     num_get = kwargs.get( "num_get", "10" )
     num_get = int( num_get ) if num_get and num_get.isdigit() else 10
 
-    print( num_get )
     if num_get > 50 :
         raise web.seeother( "/Request_Received_BUT/DANGEROUS & FORBIDDEN!" )
 

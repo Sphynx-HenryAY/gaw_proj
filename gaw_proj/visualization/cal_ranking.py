@@ -4,7 +4,7 @@ from functools import reduce
 
 from ..tmpl import struc_tmpl, data_tmpl
 
-from ..searching_settings import base_rvs_kws
+from ..settings.searching import base_rvs_kws
 
 from ..settings import Rank_Data
 from typing import List, Dict
