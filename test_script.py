@@ -2,11 +2,12 @@ from urllib.request import *
 from urllib.parse import urlencode
 from bs4 import BeautifulSoup
 from gaw_proj.settings.searching import shortcuts as sc
+from gaw_proj.settings.searching import *
 from gaw_proj.settings import *
 engine = default_search_engine
-engine = "baidu"
+#engine = "baidu"
 def get_bs( kw, engine ):
-    qs = sc[ engine ][ "query" ]
+    qs = sc[ engine ].settings[ "query" ]
     if engine == "baidu":
         qs[ "kwa" ][ "wd" ] = kw
     else:
@@ -17,7 +18,7 @@ def get_bs( kw, engine ):
     return BeautifulSoup( page_ctt, bs_parser_lib )
 
 
-ctt_cls = sc[ engine ][ cls ]
+ctt_cls = sc[ engine ].settings[ "cls" ]
 blk_tag, blk_cls = ctt_cls.get( "ctt_block" )
 abst_tag, abst_cls = ctt_cls.get( "ctt_abstract" )
 ttl_tag, ttl_cls = ctt_cls.get( "ctt_title" )

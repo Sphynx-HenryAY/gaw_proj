@@ -9,6 +9,7 @@ from bs4 import BeautifulSoup
 from typing import List
 
 from ..settings import Rank_Data
+from ..settings.searching import *
 
 def get_rank( 
         rank_data : Rank_Data

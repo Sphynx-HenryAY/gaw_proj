@@ -3,7 +3,7 @@ from web import form
 
 from ..run3 import *
 from ..tmpl import ranking_content, index_content
-from ..settings.searching import default_search_engine
+from ..settings.searching import *
 
 from time import time as get_time
 

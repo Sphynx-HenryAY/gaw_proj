@@ -24,7 +24,7 @@ def search(
         , num_get
         , is_indexing
         , query
-        , sc[ engine ].settings[ "query" ]
+        , sc[ engine ].settings[ "cls" ]
         , sc[ engine ].settings.get( "special", {} )
     )
 
