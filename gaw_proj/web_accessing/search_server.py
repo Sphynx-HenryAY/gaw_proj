@@ -35,7 +35,7 @@ def get_query():
     num_get = int( num_get ) if num_get and num_get.isdigit() else 10
 
     if num_get > 50 :
-        raise web.seeother( "/Request_Received_BUT/DANGEROUS & FORBIDDEN!" )
+        raise web.seeother( "/Request_Received_BUT/DANGEROUS_&_FORBIDDEN!/TOO_MUCH_REQ/" )
 
     engine = kwargs.get( "engine", default_search_engine )
 
